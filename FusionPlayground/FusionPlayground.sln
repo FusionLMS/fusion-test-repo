@@ -14,6 +14,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{0C5A36CC-76BC-46CC-A64F-605EDC5EBC26}"
 	ProjectSection(SolutionItems) = preProject
 		..\.github\workflows\dotnet-ci.yml = ..\.github\workflows\dotnet-ci.yml
+		..\.github\workflows\sonarcloud.yml = ..\.github\workflows\sonarcloud.yml
 	EndProjectSection
 EndProject
 Global
