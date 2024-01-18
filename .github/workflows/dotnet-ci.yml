@@ -105,8 +105,6 @@ jobs:
         run: |
           ~/.sonar/scanner/dotnet-sonarscanner begin /k:"FusionLMS_fusion-test-repo" /o:"fusionlms" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"  /d:sonar.cs.dotcover.reportsPaths=dotCover.Output.html
           dotnet build ./FusionPlayground/FusionPlayground.sln
-
-          ls -alF
-
-          dotnet dotcover cover-dotnet "./dotCover.xml" -- test
+          cd FusionPlayground
+          dotnet dotcover cover-dotnet "../dotCover.xml" -- test
           ~/.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
