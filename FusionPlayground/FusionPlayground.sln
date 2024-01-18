@@ -6,8 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1.Tests", "Consol
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A9110BE0-6D30-4E34-A5DE-7A097F83949E}"
 	ProjectSection(SolutionItems) = preProject
-		.gitignore = .gitignore
-		.dotCover = .dotCover
+		..\.dotCover = ..\.dotCover
+		..\.gitignore = ..\.gitignore
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{C23F852F-5A01-4475-9174-0B86B3938B6A}"
