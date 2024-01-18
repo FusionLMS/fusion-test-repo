@@ -1,3 +1,12 @@
-﻿using ConsoleApp1;
+﻿using System.Diagnostics.CodeAnalysis;
 
-Console.WriteLine(SimpleCalculator.Sum(5, 8));
+namespace ConsoleApp1;
+
+[ExcludeFromCodeCoverage]
+internal static class Program
+{
+    public static void Main(string[] args)
+    {
+        Console.WriteLine(SimpleCalculator.Sum(5, 8));
+    }
+}
