@@ -99,11 +99,11 @@ jobs:
 
       - name: 🔧 Install JetBrains dotCover
         if: steps.cache-dotcover.outputs.cache-hit != 'true'
-        run: dotnet tool install --global JetBrains.dotCover.GlobalTool
+        run: dotnet tool install --global JetBrains.dotCover.CommandLineTools --version 2023.3.0
 
       - name: 🏗️ Build and Analyze
         run: |
           ~/.sonar/scanner/dotnet-sonarscanner begin /k:"FusionLMS_fusion-test-repo" /o:"fusionlms" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"  /d:sonar.cs.dotcover.reportsPaths=dotCover.Output.html
-          dotnet build ./FusionPlayground/FusionPlayground.sln
-          dotnet dotcover test ./FusionPlayground/FusionPlayground.sln --dcReportType=HTML --dcFilters="-:module=*.Tests"
+          dotnet build ./FusionPlayground/FusionPlayground.sln             
+          dotnet dotcover cover-dotnet "./dotCover.xml" --ReportType=HTML -- test
           ~/.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
