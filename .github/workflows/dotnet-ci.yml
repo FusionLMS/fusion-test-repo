@@ -37,15 +37,15 @@ jobs:
 
       - name: 🔄 Restore Nuget Packages
         shell: bash
-        run: dotnet restore
+        run: dotnet restore ./FusionPlayground/FusionPlayground.sln
 
       - name: 🛠 Build Solution
         shell: bash
-        run: dotnet build
+        run: dotnet build ./FusionPlayground/FusionPlayground.sln
 
       - name: ✅ Run Unit Tests
         shell: bash
-        run: dotnet test
+        run: dotnet test ./FusionPlayground/FusionPlayground.sln
 
       - name: 🚀 Set up JDK 17
         uses: actions/setup-java@v3
@@ -80,5 +80,5 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           ~/.sonar/scanner/dotnet-sonarscanner begin /k:"FusionLMS_fusion-test-repo" /o:"fusionlms" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-          dotnet build
+          dotnet build ./FusionPlayground/FusionPlayground.sln
           ~/.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
