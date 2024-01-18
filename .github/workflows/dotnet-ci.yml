@@ -10,7 +10,7 @@ on:
     - cron: '0 22 * * *'
 
 jobs:
-  main:
+  pre-check:
     runs-on: ubuntu-latest
 
     env:
@@ -47,6 +47,21 @@ jobs:
         shell: bash
         run: dotnet test ./FusionPlayground/FusionPlayground.sln
 
+  sonarcloud_analysis:
+    runs-on: ubuntu-latest
+    needs: pre-check
+    env:
+      DOTNET_NOLOGO: 1
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: 🚀 Set up JDK 17
         uses: actions/setup-java@v3
         with:
@@ -75,9 +90,6 @@ jobs:
           dotnet tool update dotnet-sonarscanner --tool-path ~/.sonar/scanner
 
       - name: 🏗️ Build and Analyze
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           ~/.sonar/scanner/dotnet-sonarscanner begin /k:"FusionLMS_fusion-test-repo" /o:"fusionlms" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
           dotnet build ./FusionPlayground/FusionPlayground.sln
