@@ -1,0 +1,16 @@
+﻿<Root>
+  <CoverageSettings>
+    <AttributeFilters>
+      <AttributeFilterEntry>
+        <ClassMask>*.ExcludeFromCodeCoverageAttribute</ClassMask>
+        <Exclude>true</Exclude>
+      </AttributeFilterEntry>
+    </AttributeFilters>
+    <ExcludeFilters>
+      <ExcludeFilterEntry>
+        <ModuleMask>*.Tests</ModuleMask>
+        <Exclude>true</Exclude>
+      </ExcludeFilterEntry>
+    </ExcludeFilters>
+  </CoverageSettings>
+</Root>
