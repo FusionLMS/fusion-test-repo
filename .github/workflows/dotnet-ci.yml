@@ -96,17 +96,19 @@ jobs:
 #          path: ~/.dotnet/tools
 #          key: ${{ runner.os }}-dotcover-${{ hashFiles('**/*.csproj') }}
 #          restore-keys: ${{ runner.os }}-dotcover-
-#
-#      - name: 🔧 Install JetBrains dotCover
+
+      - name: 🔧 Install JetBrains dotCover
 #        if: steps.cache-dotcover.outputs.cache-hit != 'true'
-#        run: |
+        run: |
+          dotnet tool install --global JetBrains.dotCover.CommandLineTools --version 2023.3.0
+      
 
       - name: 🏗️ Build and Analyze
         run: |
           ~/.sonar/scanner/dotnet-sonarscanner begin /k:"FusionLMS_fusion-test-repo" /o:"fusionlms" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"  /d:sonar.cs.dotcover.reportsPaths=dotCover.Output.html
           dotnet build ./FusionPlayground/FusionPlayground.sln
 
-          dotnet tool install --global JetBrains.dotCover.CommandLineTools --version 2023.3.0
-          dotnet-dotCover cover-dotnet "./dotCover.xml" --Output=dotCover.Output.html -- test "./FusionPlayground/FusionPlayground.sln"
+           dotnet-dotCover cover-dotnet "./dotCover.xml" --Output=dotCover.Output.html --ReportType=HTML -- test
+#          dotnet-dotCover cover-dotnet "./dotCover.xml" --Output=dotCover.Output.html -- test "./FusionPlayground/FusionPlayground.sln"
 
           ~/.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
