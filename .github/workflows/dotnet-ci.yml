@@ -96,5 +96,5 @@ jobs:
         run: |
           ~/.sonar/scanner/dotnet-sonarscanner begin /k:"FusionLMS_fusion-test-repo" /o:"fusionlms" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"  /d:sonar.cs.dotcover.reportsPaths=dotCover.Output.html
           dotnet build ./FusionPlayground/FusionPlayground.sln
-          dotnet-dotCover cover-dotnet "./dotCover.xml" --Output=dotCover.Output.html --ReportType=HTML -- test "./FusionPlayground/FusionPlayground.sln"
+          dotnet-dotCover cover-dotnet "./dotCover.xml" --AttributeFilters="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" --Filters="-:*.Tests" --Output=dotCover.Output.html --ReportType=HTML -- test "./FusionPlayground/FusionPlayground.sln"
           ~/.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
