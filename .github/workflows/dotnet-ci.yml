@@ -99,8 +99,7 @@ jobs:
 
       - name: 🔧 Install JetBrains dotCover
 #        if: steps.cache-dotcover.outputs.cache-hit != 'true'
-        run: |
-          dotnet tool install --global JetBrains.dotCover.CommandLineTools --version 2023.3.0
+        run: dotnet tool install --global JetBrains.dotCover.CommandLineTools --version 2023.3.0
 
       - name: 🏗️ Build and Analyze
         run: |
