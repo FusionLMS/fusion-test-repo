@@ -103,11 +103,9 @@ jobs:
 
       - name: 🏗️ Build and Analyze
         run: |
+          dotnet tool install --global JetBrains.dotCover.CommandLineTools --version 2023.3.0
+          dotnet-dotCover cover-dotnet "./dotCover.xml" --Output=dotCover.Output.html -- test "./FusionPlayground/FusionPlayground.sln"
+
           ~/.sonar/scanner/dotnet-sonarscanner begin /k:"FusionLMS_fusion-test-repo" /o:"fusionlms" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"  /d:sonar.cs.dotcover.reportsPaths=dotCover.Output.html
           dotnet build ./FusionPlayground/FusionPlayground.sln
-          
-          dotnet tool install --global JetBrains.dotCover.CommandLineTools --version 2023.3.0
-          echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
-
-          dotnet dotcover cover-dotnet "./dotCover.xml" --Output=dotCover.Output.html -- test "./FusionPlayground/FusionPlayground.sln"
           ~/.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
