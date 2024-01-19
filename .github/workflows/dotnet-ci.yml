@@ -89,16 +89,16 @@ jobs:
           mkdir -p ~/.sonar/scanner
           dotnet tool update dotnet-sonarscanner --tool-path ~/.sonar/scanner
 
-#      - name: 🗃️ Cache dotCover
-#        id: cache-dotcover
-#        uses: actions/cache@v3
-#        with:
-#          path: ~/.dotnet/tools
-#          key: ${{ runner.os }}-dotcover-${{ hashFiles('**/*.csproj') }}
-#          restore-keys: ${{ runner.os }}-dotcover-
+      - name: 🗃️ Cache dotCover
+        id: cache-dotcover
+        uses: actions/cache@v3
+        with:
+          path: ~/.dotnet/tools
+          key: ${{ runner.os }}-dotcover-${{ hashFiles('**/*.csproj') }}
+          restore-keys: ${{ runner.os }}-dotcover-
 
       - name: 🔧 Install JetBrains dotCover
-#        if: steps.cache-dotcover.outputs.cache-hit != 'true'
+        if: steps.cache-dotcover.outputs.cache-hit != 'true'
         run: |
           dotnet tool install --global JetBrains.dotCover.CommandLineTools --version 2023.3.0
           echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
@@ -107,5 +107,5 @@ jobs:
         run: |
           ~/.sonar/scanner/dotnet-sonarscanner begin /k:"FusionLMS_fusion-test-repo" /o:"fusionlms" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"  /d:sonar.cs.dotcover.reportsPaths=dotCover.Output.html
           dotnet build ./FusionPlayground/FusionPlayground.sln
-          dotnet dotcover test ./FusionPlayground/FusionPlayground.sln
+          dotnet dotcover cover-dotnet "./dotCover.xml" --Output=dotCover.Output.html -- test "./FusionPlayground/FusionPlayground.sln"
           ~/.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
