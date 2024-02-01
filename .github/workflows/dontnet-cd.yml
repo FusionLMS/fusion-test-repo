@@ -17,7 +17,7 @@ jobs:
         run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Tag Docker image
-        run: docker tag my-image ghcr.io/${{ github.repository }}/fusion-test:latest
+        run: docker tag my-image ghcr.io/fusionlms/fusion-test-repo/fusion-test:latest
 
       - name: Push to GitHub Package Registry
         run: docker push ghcr.io/${{ github.repository }}/fusion-test:latest
