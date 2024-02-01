@@ -30,13 +30,8 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository }}/fusion-test:latest
+          tags: ghcr.io/fusionlms/fusion-test-repo/fusion-test:latest
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v3
-        with:
-          images: ghcr.io/${{ github.repository }}/fusion-test
 
     # Add steps for Semantic Versioning here
     # The exact implementation depends on your project's versioning strategy
