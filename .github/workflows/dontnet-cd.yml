@@ -1,0 +1,27 @@
+﻿name: Continuous Delivery
+
+on:
+  pull_request:
+  push:
+    branches:
+      - '**' 
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build Docker image
+        run: docker build . --tag my-image
+        
+      - name: Log in to GitHub Container Registry
+        run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+    
+      - name: Tag Docker image
+        run: docker tag my-image ghcr.io/${{ github.repository }}/fusion-test:latest
+    
+      - name: Push to GitHub Package Registry
+        run: docker push ghcr.io/${{ github.repository }}/fusion-test:latest
+
+      - name: Increment SemVer
+        run: # Add script or action to increment the version
