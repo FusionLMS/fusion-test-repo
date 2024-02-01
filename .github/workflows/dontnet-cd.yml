@@ -24,4 +24,4 @@ jobs:
         run: docker push ghcr.io/${{ github.repository }}/fusion-test:latest
 
       - name: Increment SemVer
-        run: # Add script or action to increment the version
+        
