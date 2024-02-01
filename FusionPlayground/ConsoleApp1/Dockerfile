@@ -8,7 +8,6 @@ WORKDIR /src
 COPY ["ConsoleApp1.csproj", "./"]
 RUN dotnet restore "ConsoleApp1.csproj"
 COPY . .
-WORKDIR "/src/ConsoleApp1"
 RUN dotnet build "ConsoleApp1.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
