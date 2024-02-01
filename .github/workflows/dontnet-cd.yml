@@ -19,7 +19,7 @@ jobs:
         run: docker tag fusion-test-image ghcr.io/fusionlms/fusion-test-repo/fusion-test:latest
 
       - name: Push to GitHub Package Registry
-        run: docker push ghcr.io/${{ github.repository }}/fusion-test:latest
+        run: docker push ghcr.io/fusionlms/fusion-test-repo/fusion-test:latest
 
     # Add steps for Semantic Versioning here
     # The exact implementation depends on your project's versioning strategy
