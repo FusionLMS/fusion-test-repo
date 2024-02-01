@@ -2,9 +2,7 @@
 
 on:
   pull_request:
-  push:
-    branches:
-      - '**'
+    branches: [ main ]
 
 jobs:
   build-and-push:
@@ -12,7 +10,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build Docker image
-        run: docker build . --tag fusion-test-image
+        run: docker build ./ConsoleApp1 --tag fusion-test-image
+
         
       - name: Log in to GitHub Container Registry
         run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
