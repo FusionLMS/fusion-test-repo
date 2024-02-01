@@ -5,13 +5,12 @@ on:
     workflows: [".NET Continuous Integration"]
     types:
       - completed
-    branches: [main]
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Build Docker image
         run: docker build ./FusionPlayground/ConsoleApp1 --tag fusion-test-image
         
