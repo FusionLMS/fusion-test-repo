@@ -1,9 +1,8 @@
 ﻿name: Continuous Delivery
 
 on:
-  repository_dispatch:
-    types:
-      - trigger-cd-event
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build-and-push:
