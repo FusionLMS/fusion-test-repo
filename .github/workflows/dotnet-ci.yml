@@ -49,7 +49,7 @@ jobs:
         
       - name: Trigger Continuous Delivery Workflow
         if: success()
-        uses: peter-evans/repository-dispatch@v1
+        uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           repository: fusionlms/fusion-test-repo
