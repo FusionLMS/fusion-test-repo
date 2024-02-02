@@ -1,11 +1,9 @@
 ﻿name: Continuous Delivery
 
 on:
-  workflow_run:
-    workflows: [".NET Continuous Integration"]
-    types:
-      - completed
-    branches: [main]
+  repository_dispatch:
+    types: [continuous-delivery-trigger]
+
 
 jobs:
   build-and-push:

@@ -46,7 +46,16 @@ jobs:
       - name: ✅ Run Unit Tests
         shell: bash
         run: dotnet test ./FusionPlayground/FusionPlayground.sln
-
+        
+      - name: Trigger Continuous Delivery Workflow
+        if: success()
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          repository: fusionlms/fusion-test-repo
+          event-type: continuous-delivery-trigger
+  
+  
   
   sonarcloud_analysis:
     runs-on: ubuntu-latest
