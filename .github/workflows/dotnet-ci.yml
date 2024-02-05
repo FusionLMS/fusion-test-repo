@@ -52,17 +52,36 @@ jobs:
     needs: pre-check
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Important for fetching all tags and branches
+
+      - name: Determine Next Version
+        id: versioning
+        run: |
+          LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+          echo "Latest tag: $LATEST_TAG"
+          NEW_TAG=$(echo $LATEST_TAG | awk -F. '{print $1"."$2"."substr($3, 2)+1}')
+          echo "New version: $NEW_TAG"
+          echo "::set-output name=new-tag::$NEW_TAG"
+
       - name: Build Docker image
         run: docker build ./FusionPlayground/ConsoleApp1 --tag fusion-test-image
 
       - name: Log in to GitHub Container Registry
         run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Tag Docker image
-        run: docker tag fusion-test-image ghcr.io/fusionlms/fusion-test-repo/fusion-test:latest
+      - name: Tag Docker image with new version
+        run: docker tag fusion-test-image ghcr.io/fusionlms/fusion-test-repo/fusion-test:${{ steps.versioning.outputs.new-tag }}
 
       - name: Push to GitHub Package Registry
-        run: docker push ghcr.io/fusionlms/fusion-test-repo/fusion-test:latest
+        run: docker push ghcr.io/fusionlms/fusion-test-repo/fusion-test:${{ steps.versioning.outputs.new-tag }}
+
+      - name: Tag New Version in Git
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git tag ${{ steps.versioning.outputs.new-tag }}
+          git push origin ${{ steps.versioning.outputs.new-tag }}
       
 #      - name: Trigger Continuous Delivery Workflow
 #        if: success()
