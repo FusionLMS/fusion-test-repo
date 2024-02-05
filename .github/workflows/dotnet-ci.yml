@@ -83,7 +83,7 @@ jobs:
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
           git config --global credential.helper store
-          echo "https://x-access-token:${REPO_ACCESS_TOKEN}@github.com" > ~/.git-credentials
+          echo "https://x-access-token:${PERSONAL_ACCESS_TOKEN}@github.com" > ~/.git-credentials
           git tag ${{ steps.versioning.outputs.new-tag }}
           git push origin ${{ steps.versioning.outputs.new-tag }}
 
