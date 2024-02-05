@@ -77,11 +77,16 @@ jobs:
         run: docker push ghcr.io/fusionlms/fusion-test-repo/fusion-test:${{ steps.versioning.outputs.new-tag }}
 
       - name: Tag New Version in Git
+        env:
+          REPO_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git config --global credential.helper store
+          echo "https://x-access-token:${REPO_ACCESS_TOKEN}@github.com" > ~/.git-credentials
           git tag ${{ steps.versioning.outputs.new-tag }}
           git push origin ${{ steps.versioning.outputs.new-tag }}
+
       
 #      - name: Trigger Continuous Delivery Workflow
 #        if: success()
