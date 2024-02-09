@@ -52,7 +52,6 @@ jobs:
       actions: write
       contents: write
       deployments: write
-      metadata: write
       packages: write
       pull-requests: write
       statuses: write
