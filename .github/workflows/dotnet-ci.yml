@@ -48,6 +48,14 @@ jobs:
         run: dotnet test ./FusionPlayground/FusionPlayground.sln
         
   build-and-push:
+    permissions:
+      actions: write
+      contents: read
+      deployments: write
+      id-token: write
+      packages: read
+      pull-requests: read
+      statuses: read
     runs-on: ubuntu-latest
     needs: pre-check
     steps:
@@ -83,7 +91,6 @@ jobs:
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
           git config --global credential.helper store
-          echo "https://x-access-token:${PERSONAL_ACCESS_TOKEN}@github.com" > ~/.git-credentials
           git tag ${{ steps.versioning.outputs.new-tag }}
           git push origin ${{ steps.versioning.outputs.new-tag }}
 
