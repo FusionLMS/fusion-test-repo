@@ -92,8 +92,6 @@ jobs:
           git config --global credential.helper store
           git tag ${{ steps.versioning.outputs.new-tag }}
           git push origin ${{ steps.versioning.outputs.new-tag }}
-
-
       
 #      - name: Trigger Continuous Delivery Workflow
 #        if: success()
@@ -103,8 +101,6 @@ jobs:
 #          repository: FusionLMS/fusion-test-repo
 #          event-type: continuous-delivery-trigger
 # 
-  
-  
   
   sonarcloud_analysis:
     runs-on: ubuntu-latest
