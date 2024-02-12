@@ -61,12 +61,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Important for fetching all tags and branches
-      - name: Fetch tags from json
-        run: |
-          # Fetch tags from GHCR
-          TAGS_JSON=$(curl -H "Authorization: Bearer $GHCR_TOKEN" "$GHCR_API_URL/user/packages/container/$REPO_NAME/versions")
-          echo "$TAGS_JSON" # Add this line to debug the output
-          # Proceed with the rest of your script
 
       - name: Determine Next Version
         id: versioning
@@ -77,6 +71,7 @@ jobs:
         run: |
           # Fetch tags from GHCR
           TAGS_JSON=$(curl -H "Authorization: Bearer $GHCR_TOKEN" "$GHCR_API_URL/user/packages/container/$REPO_NAME/versions")
+          echo "$TAGS_JSON" # Add this line to debug the output
           # Extract tags, assuming tags are in the format of "vX.Y.Z"
           LATEST_TAG=$(echo $TAGS_JSON | jq -r '[.[] | .name] | .[]' | sort -V | tail -n1)
           echo "Latest tag: $LATEST_TAG"
