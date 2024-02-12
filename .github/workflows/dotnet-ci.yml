@@ -64,12 +64,21 @@ jobs:
 
       - name: Determine Next Version
         id: versioning
+        env:
+          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+          REPO_NAME: fusionlms/fusion-test-repo/fusion-test
+          GHCR_API_URL: https://api.github.com
         run: |
-          LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+          # Fetch tags from GHCR
+          TAGS_JSON=$(curl -H "Authorization: Bearer $GHCR_TOKEN" "$GHCR_API_URL/user/packages/container/$REPO_NAME/versions")
+          # Extract tags, assuming tags are in the format of "vX.Y.Z"
+          LATEST_TAG=$(echo $TAGS_JSON | jq -r '[.[] | .name] | .[]' | sort -V | tail -n1)
           echo "Latest tag: $LATEST_TAG"
-          NEW_TAG=$(echo $LATEST_TAG | awk -F. '{print $1"."$2"."substr($3, 2)+1}')
+          # Increment the patch version
+          NEW_TAG=$(echo $LATEST_TAG | awk -F. '{print $1"."$2"."$3+1}')
           echo "New version: $NEW_TAG"
-          echo "::set-output name=new-tag::$NEW_TAG"
+          # Set the new version for later steps
+          echo "NEW_TAG=$NEW_TAG" >> $GITHUB_ENV
 
       - name: Build Docker image
         run: docker build ./FusionPlayground/ConsoleApp1 --tag fusion-test-image
@@ -78,10 +87,10 @@ jobs:
         run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Tag Docker image with new version
-        run: docker tag fusion-test-image ghcr.io/fusionlms/fusion-test-repo/fusion-test:${{ steps.versioning.outputs.new-tag }}
-
+        run: docker tag fusion-test-image ghcr.io/fusionlms/fusion-test-repo/fusion-test:${{ env.NEW_TAG }}
+        
       - name: Push to GitHub Package Registry
-        run: docker push ghcr.io/fusionlms/fusion-test-repo/fusion-test:${{ steps.versioning.outputs.new-tag }}
+        run: docker push ghcr.io/fusionlms/fusion-test-repo/fusion-test:${{ env.NEW_TAG }}
 
       - name: Tag New Version in Git
         env:
@@ -90,8 +99,8 @@ jobs:
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
           git config --global credential.helper store
-          git tag ${{ steps.versioning.outputs.new-tag }}
-          git push origin ${{ steps.versioning.outputs.new-tag }}
+          git tag ${{ env.NEW_TAG }}
+          git push origin ${{ env.NEW_TAG }}
       
 #      - name: Trigger Continuous Delivery Workflow
 #        if: success()
