@@ -62,25 +62,15 @@ jobs:
         with:
           fetch-depth: 0 # Important for fetching all tags and branches
 
+
       - name: Determine Next Version
         id: versioning
-        env:
-          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
-          REPO_NAME: fusionlms/fusion-test-repo/fusion-test
-          GHCR_API_URL: https://api.github.com
         run: |
-          # Fetch tags from GHCR
-          TAGS_JSON=$(curl -H "Authorization: Bearer $GHCR_TOKEN" "$GHCR_API_URL/user/packages/container/$REPO_NAME/versions")
-          echo "$TAGS_JSON" # Add this line to debug the output
-          # Extract tags, assuming tags are in the format of "vX.Y.Z"
-          LATEST_TAG=$(echo $TAGS_JSON | jq -r '[.[] | .name] | .[]' | sort -V | tail -n1)
+          LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
           echo "Latest tag: $LATEST_TAG"
-          # Increment the patch version
-          NEW_TAG=$(echo $LATEST_TAG | awk -F. '{print $1"."$2"."$3+1}')
+          NEW_TAG=$(echo $LATEST_TAG | awk -F. '{print $1"."$2"."substr($3, 2)+1}')
           echo "New version: $NEW_TAG"
-          # Set the new version for later steps
-          echo "NEW_TAG=$NEW_TAG" >> $GITHUB_ENV
-
+          echo "::set-output name=new-tag::$NEW_TAG"
       - name: Build Docker image
         run: docker build ./FusionPlayground/ConsoleApp1 --tag fusion-test-image
 
@@ -88,10 +78,10 @@ jobs:
         run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Tag Docker image with new version
-        run: docker tag fusion-test-image ghcr.io/fusionlms/fusion-test-repo/fusion-test:${{ env.NEW_TAG }}
-        
+        run: docker tag fusion-test-image ghcr.io/fusionlms/fusion-test-repo/fusion-test:${{ steps.versioning.outputs.new-tag }}
+
       - name: Push to GitHub Package Registry
-        run: docker push ghcr.io/fusionlms/fusion-test-repo/fusion-test:${{ env.NEW_TAG }}
+        run: docker push ghcr.io/fusionlms/fusion-test-repo/fusion-test:${{ steps.versioning.outputs.new-tag }}
 
       - name: Tag New Version in Git
         env:
@@ -100,8 +90,8 @@ jobs:
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
           git config --global credential.helper store
-          git tag ${{ env.NEW_TAG }}
-          git push origin ${{ env.NEW_TAG }}
+          git tag ${{ steps.versioning.outputs.new-tag }}
+          git push origin ${{ steps.versioning.outputs.new-tag }}
       
 #      - name: Trigger Continuous Delivery Workflow
 #        if: success()
